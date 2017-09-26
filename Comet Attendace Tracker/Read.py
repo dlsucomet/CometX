@@ -4,10 +4,85 @@
 import RPi.GPIO as GPIO
 import MFRC522
 import signal
-import xlwt
+import xlwt, xlrd
+import time
 from datetime import datetime
+from xlutils.copy import copy
 
 continue_reading = True
+########################################################################################
+#fonts and styles
+font = xlwt.Font()
+font.name = 'Times New Roman'
+font.colour_index = 2
+font.bold = True
+
+font1 = xlwt.Font()
+font1.name = 'Times New Roman'
+font1.colour_index = 0
+font1.bold = False
+
+#Date format
+style = xlwt.XFStyle()
+style.num_format_str = 'D-MMMM-YY'
+style.font = font
+
+#Time format
+style1 = xlwt.XFStyle()
+style1.num_format_str = 'h:mm:ss AM/PM'
+style1.font = font1
+##########################################################################################
+#Read list from excel file
+database = xlrd.open_workbook('DB.xlsx')
+data_sheet = database.sheet_by_name('Master List')
+id_num = 0
+def check_List(uid): #Checks if the uid is part of the database
+
+    column = data_sheet.col_values(colx=1, start_rowx=1)
+    
+    if (str(uid)[1:-1]) in list(column):
+        
+        return True
+    else:
+        return False
+  
+def create_attendace_sheet(): 
+    attendance = xlwt.Workbook()
+    ws = attendace.add_sheet('Monday')
+    
+    row = 2
+    col = 1
+    
+    #Resize Columns
+    col_2 = ws.col(1)
+    col_2.width = 256*30
+    col_3 = ws.col(2)
+    col_3.width = 256*30
+    col_4 = ws.col(3)
+    col_4.width = 256*30
+    
+    #Add Column Labels
+    ws.write(0,0,'DATE', label)
+    ws.write(0,1, datetime.today(), style)
+    ws.write(row,1,'ID', label
+    ws.write(row,2,'NAME', label)
+    ws.write(row,3,'TIME-IN', label)
+    ws.write(row,4,'TIME-OUT', label)
+    row += 1
+    
+    #Search ID number
+    
+    #Write Time in        
+    if
+        ws.write(row, col, datetime.time(datetime.now()), style1)
+    
+    
+    
+
+#def user_log(uid): #Writes the time in and time out of the uid
+ #   column = data_sheet.col_values(colx=3
+    
+
 
 # Capture SIGINT for cleanup when the script is aborted
 def end_read(signal,frame):
@@ -43,8 +118,8 @@ while continue_reading:
     if status == MIFAREReader.MI_OK:
 
         # Print UID
-        print "Card read UID: "+str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3])
-    
+        print "Card read UID: "+str(uid)
+        check_List(uid)
         # This is the default key for authentication
         key = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]
         
@@ -58,6 +133,10 @@ while continue_reading:
         if status == MIFAREReader.MI_OK:
             MIFAREReader.MFRC522_Read(8)
             MIFAREReader.MFRC522_StopCrypto1()
-        else:
-            print "Authentication error"
-
+       # else:
+            #print "Authentication error"
+        
+            
+        #delay
+        time.sleep(2)
+        
