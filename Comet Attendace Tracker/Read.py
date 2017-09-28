@@ -93,6 +93,7 @@ def get_Id(uid): #Gets the ID number of the comet member
         return False
 
 def user_log(uid, row): #Writes the time in and time out of the uid
+    #Insert Code Here
     print('False')
 
 # Capture SIGINT for cleanup when the script is aborted
