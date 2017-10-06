@@ -1,2 +1,2 @@
-"# Comet-Attendace-Tracker" 
-"# CometX" 
+CometX
+Overview: Internet of Experiences or IoX focuses on using the Internet of things (IoT) to improve or create personalized user experiences (UX) in a given space. With the use of the internet, computing devices, and modern sensors, the proper interfacing and successful connection of these resources grant the capacity to send and receive data from the real world which eventually result to the enhancement of the people's lives. It also monitors and helps in understanding specific characteristics of the user to create relevant and customized experiences for the user.
