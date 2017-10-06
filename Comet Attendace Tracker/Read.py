@@ -93,6 +93,68 @@ def get_Id(uid): #Gets the ID number of the comet member
         return False
 
 def user_log(uid, row): #Writes the time in and time out of the uid
+    #Taps are considered as in or out
+    #If tap in is greater then tap out, then the type of tap is out.
+    #If tap out is greater than than tap in, then the type of tap is in.
+    #Total is tap out - tap in, only in tapo outs
+    #Use military time to compare tap ins and tap outs
+
+    time_now = datetime.now().time()
+    date_now = datetime.today()
+    day = str(calendar.day_name[date_now.weekday()])
+    attendance = xlrd.open_workbook('Attendance.xls')
+    attendance_sheet_xlrd = attendance.sheet_by_index(0)
+    attendance_writable = copy(attendance)
+    attendance_sheet = attendance_writable.get_sheet(0)
+
+    #Check if TIME-IN is empty
+    if (attendance_sheet_xlrd.cell_type (row, 3) in (xlrd.XL_CELL_EMPTY, xlrd.XL_CELL_BLANK)):
+        attendance_sheet.write(row, 3, date_now, style1)
+    #Check if TIME-OUT is empty
+    elif (attendance_sheet_xlrd.cell_type (row, 4) in (xlrd.XL_CELL_EMPTY, xlrd.XL_CELL_BLANK)):
+        attendance_sheet.write(row, 4, date_now, style1)
+        
+        #Calculates the DURATION
+        xldate_TIME_IN = attendance_sheet_xlrd.cell_value(row, 3)
+
+        tuple_TIME_IN = xlrd.xldate_as_tuple(xldate_TIME_IN, attendance.datemode)
+        TIME_IN = datetime(*tuple_TIME_IN)
+        datetime_TIME_IN = TIME_IN.time()
+
+        duration = date_now - TIME_IN
+        temp_date = date_now - timedelta(hours = date_now.hour, minutes = date_now.minute, seconds = date_now.second, microseconds = date_now.microsecond)
+
+        attendance_sheet.write(row, 5, temp_date + duration, style1)
+        
+    #Checks if TIME-IN is greater than TIME-OUT and vice versa
+    else:
+        xldate_TIME_IN = attendance_sheet_xlrd.cell_value(row, 3)
+        xldate_TIME_OUT = attendance_sheet_xlrd.cell_value(row, 4)
+
+        tuple_TIME_IN = xlrd.xldate_as_tuple(xldate_TIME_IN, attendance.datemode)
+        TIME_IN = datetime(*tuple_TIME_IN)
+        datetime_TIME_IN = TIME_IN.time()
+        tuple_TIME_OUT = xlrd.xldate_as_tuple(xldate_TIME_OUT, attendance.datemode)
+        TIME_OUT = datetime(*tuple_TIME_OUT)
+        datetime_TIME_OUT = TIME_OUT.time()
+        
+        if (datetime_TIME_IN > datetime_TIME_OUT):
+            attendance_sheet.write(row, 4, date_now, style1)
+
+            duration = date_now - TIME_IN
+            temp_date = date_now - timedelta(hours = date_now.hour, minutes = date_now.minute, seconds = date_now.second, microseconds = date_now.microsecond)
+
+            #Adds current previous duration
+            xldate_DURATION = attendance_sheet_xlrd.cell_value(row, 5)
+            tuple_DURATION = xlrd.xldate_as_tuple(xldate_DURATION, attendance.datemode)
+            datetime_DURATION = datetime(*tuple_DURATION)
+            attendance_sheet.write(row, 5, duration + datetime_DURATION, style1)
+
+        elif (datetime_TIME_OUT > datetime_TIME_IN):
+            attendance_sheet.write(row, 3, date_now, style1)
+
+    attendance_writable.save('Attendance.xls')
+
     print('False')
 
 # Capture SIGINT for cleanup when the script is aborted
