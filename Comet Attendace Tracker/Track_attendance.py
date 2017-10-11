@@ -157,10 +157,30 @@ def user_log(uid):
 		attend_sheet.write(2,3,'TIME-IN', label)
 		attend_sheet.write(2,4,'TIME-OUT', label)
 		attend_sheet.write(2,5,'DURATION', label)
+		#### save format####
+		file.save(day+' '+'Attendance.xls')
+		##################### COLUMNS ###########################
+		attendance = xlrd.open_workbook(day+' '+'Attendance.xls')
+		sheet = attendance.sheet_by_name(day)
+		
+		name = list(sheet.col_values(colx=2, start_rowx=3))
+		timein_column = list(sheet.col_values(colx=3, start_rowx=3))
+		timeout_column = list(sheet.col_values(colx=4, start_rowx=3))
+		duration_column = list(sheet.col_values(colx=5, start_rowx=3))
 		################################################
 		row = 2 + get_row(uid)
-		
-		attend_sheet.write(row, 3, datetime.now(), style1)
+		#if time-in is empty
+		if ('' == timein_column[row-3]):
+			attend_sheet.write(row, 3, datetime.now(), style1)
+		elif ('' == timeout_column[row-3]): 
+			attend_sheet.write(row, 3, timein_column[row-3], style1)
+			attend_sheet.write(row, 4, datetime.now(), style1)
+			
+		    #Calculates the DURATION
+		else:
+			attend_sheet.write(row, 3, timein_column[row-3], style1)
+			attend_sheet.write(row, 4, datetime.now(), style1)
+
 		#Save
 		file.save(day+' '+'Attendance.xls')
 	else: 
