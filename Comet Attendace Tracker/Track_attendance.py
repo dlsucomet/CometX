@@ -194,14 +194,30 @@ def user_log(uid, row):
 		if ('' == timein_column[row-3]):
 			attend_sheet.write(row, 3, datetime.now(), style1)
 		elif ('' == timeout_column[row-3]): 
-			attend_sheet.write(row, 3, timein_column[row-3], style1)
-			attend_sheet.write(row, 4, datetime.now(), style1)
+			#Calculates the DURATION
+			prev_out = xlrd.xldate_as_datetime(timein_column[row-3], 0)
+			new_out = datetime.now()
+			#Calculates the DURATION
+			duration = new_out - prev_out
+			temp_date = new_out - timedelta(hours = new_out.hour, minutes = new_out.minute, seconds = new_out.second, microseconds = new_out.microsecond)
 			
-		    #Calculates the DURATION
-		else:
 			attend_sheet.write(row, 3, timein_column[row-3], style1)
 			attend_sheet.write(row, 4, datetime.now(), style1)
-
+			attend_sheet.write(row, 5, duration + temp_date, style2)
+			
+		else:
+			prev_out = xlrd.xldate_as_datetime(timeout_column[row-3], 0)
+			prev_dur = xlrd.xldate_as_datetime(duration_column[row-3], 0)
+			new_out = datetime.now()
+			#Calculates the DURATION
+			duration = (new_out - prev_out) 
+			temp_date = new_out - timedelta(hours = new_out.hour, minutes = new_out.minute, seconds = new_out.second, microseconds = new_out.microsecond)
+			temp_date = temp_date + timedelta(hours = prev_dur.hour, minutes = prev_dur.minute, seconds = prev_dur.second, microseconds = prev_dur.microsecond)
+			
+			attend_sheet.write(row, 3, timein_column[row-3], style1)
+			attend_sheet.write(row, 4, datetime.now(), style1)
+			attend_sheet.write(row, 5, duration + temp_date, style2)
+			
 		#Save
 		file.save(day+' '+'Attendance.xls')
 	else: 
