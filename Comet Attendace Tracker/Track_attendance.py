@@ -38,6 +38,12 @@ style1 = xlwt.XFStyle()
 style1.num_format_str = 'h:mm:ss AM/PM'
 style1.font = font1
 
+style2 = xlwt.XFStyle()
+style2.num_format_str = 'h:mm:ss'
+style2.font = font1
+
+continue_reading = True
+
 def check_List(uid): 
 ################################################################
 #Checks if the uid is part of the database
@@ -150,7 +156,7 @@ def user_log(uid, row):
 #Total is tap out - tap in, only in tapo outs
 #Use military time to compare tap ins and tap outs
 ################################################################
-		#Date
+	#Date
 	date_now = datetime.today()
 	day = str(calendar.day_name[date_now.weekday()])
 	
@@ -190,7 +196,6 @@ def user_log(uid, row):
 		duration_column = list(sheet.col_values(colx=5, start_rowx=3))
 		################################################
 		row = 2 + get_row(uid)
-		#if time-in is empty
 		if ('' == timein_column[row-3]):
 			for x in range(3, len(name)):
 				if ('' != timein_column[x]):
@@ -238,7 +243,7 @@ def user_log(uid, row):
 			attend_sheet.write(row, 3, timein_column[row-3], style1)
 			attend_sheet.write(row, 4, datetime.now(), style1)
 			attend_sheet.write(row, 5, duration + temp_date, style2)
-	
+		
 		#Save
 		file.save(day+' '+'Attendance.xls')
 	else: 
