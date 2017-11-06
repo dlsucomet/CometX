@@ -38,6 +38,12 @@ style1 = xlwt.XFStyle()
 style1.num_format_str = 'h:mm:ss AM/PM'
 style1.font = font1
 
+style2 = xlwt.XFStyle()
+style2.num_format_str = 'h:mm:ss'
+style2.font = font1
+
+continue_reading = True
+
 def check_List(uid): 
 ################################################################
 #Checks if the uid is part of the database
