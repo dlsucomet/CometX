@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>CometX</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+    crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static "styles/index.css" %}">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      @media (min-width: 1200px) {
+        .container{
+        max-width: 1260px;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" href="" tabindex="-1">CometX</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  {% include "./navbar.html" %}
+
+
+</nav>
+
+<main role="main" class="container">
+
+  <div class="starter-template">
+      <div style="margin-bottom: 20px">
+      </div>
+            <table border="1">
+                <tr>
+                    <th>UID</th>
+                    <th>ID Number</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Nickname</th>
+                </tr>
+                {% for i in memberList%}
+                <tr>
+                    <th>{% if i.uid %} {{ i.uid }} {% endif %}</th>
+                    <th>{% if i.idnum %} {{ i.idnum }} {% endif %}</th>
+                    <th>{% if i.firstname %} {{ i.firstname }} {% endif %}</th>
+                    <th>{% if i.lastname %} {{ i.lastname }} {% endif %}</th>
+                    <th>{% if i.nickname %} {{ i.nickname }} {% endif %}</th>
+                </tr>
+                {% endfor %}
+            </table>
+      </div>
+  </div>
+</main><!-- /.container -->
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+  crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+  crossorigin="anonymous"></script>
+<script>
+</script>
+</html>
