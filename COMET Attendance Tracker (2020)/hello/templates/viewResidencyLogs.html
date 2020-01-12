@@ -52,14 +52,13 @@
 
   <div class="starter-template">
       <div style="margin-bottom: 20px">
-        <input type="date" name="date" id="datePicker" value="2020-01-01">
-        <input type="submit">
       </div>
             <table border="1">
                 <tr>
                     <th>UID</th>
                     <th>ID Number</th>
                     <th>Nickname</th>
+                    <th>Minutes</th>
                     <th>Timestamp</th>
                 </tr>
                 {% for i in logList %}
@@ -67,6 +66,7 @@
                     <th>{% if i.uid %} {{ i.uid }} {% endif %}</th>
                     <th>{% if i.idnum %} {{ i.idnum }} {% endif %}</th>
                     <th>{% if i.nickname %} {{ i.nickname }} {% endif %}</th>
+                    <th>{% if i.minutes %} {{ i.minutes }} {% endif %}</th>
                     <th>{% if i.timestamp %} {{ i.timestamp }} {% endif %}</th>
                 </tr>
                 {% endfor %}

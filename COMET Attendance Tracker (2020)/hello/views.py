@@ -6,19 +6,22 @@ from django.db.models import Q
 
 from .models import Member
 from .models import Log 
+from .models import ResidencyLog 
 
 from datetime import datetime
+from datetime import timedelta 
 from pytz import timezone
 
 import django
 import _thread
 import serial
 
-current = {}
+status = {}
+timestamp = {}
 phil_tz = timezone('Asia/Manila')
 # Function that handles RFID scanner
 def scanner_thread():
-    ser = serial.Serial('/dev/ttyACM0', 9600)
+    ser = serial.Serial('/dev/ttyUSB0', 9600)
     print(ser.name)
 
     # try:
@@ -43,13 +46,19 @@ def scanner_thread():
         uid = ser.readline().decode('utf-8').strip().replace(' ','')
         # print("UID:", uid)
         curTime = datetime.now(phil_tz)
-        readableTime = str(curTime.hour) + ":" + str(curTime.minute)
+        stringHour = str(curTime.hour)
+        if(curTime.hour < 10):
+            stringHour = '0' + stringHour
+        stringMinute = str(curTime.minute)
+        if(curTime.minute < 10):
+            stringMinute = '0' + stringMinute
+        readableTime = stringHour + ":" + stringMinute
         mem = Member.objects.filter(uid=uid)
         if(not mem.exists()):
             print("Member does not exist. Create one.")
-            nickname = input("Input nickname: ")
             firstname = input("Input firstname: ")
             lastname = input("Input lastname: ")
+            nickname = input("Input nickname: ")
             idnum = input("Input idnum: ")
             mem = Member(
                 uid=uid,
@@ -61,7 +70,6 @@ def scanner_thread():
             mem.save()
 
         mem = Member.objects.get(uid=uid)
-        nickname = mem.nickname
         
         log = Log(
             member=mem,
@@ -69,16 +77,33 @@ def scanner_thread():
         )
         log.save()
 
-        if(uid in current):
-            if(current[uid]):
-                print(nickname, "goes out at", readableTime)
-                current[uid] = False
+        if(uid in status):
+            if(status[uid]):
+                status[uid] = False
+                seconds = (curTime - timestamp[uid]).total_seconds()
+                print("###")
+                print("See you later",mem.firstname,mem.lastname+"!")
+                print("Time:",readableTime)
+                print("Minutes stayed:",format(seconds / 60, '.2f'))
+                residencyLog = ResidencyLog(
+                    member=mem,
+                    seconds=seconds,
+                    timestamp=curTime
+                )
+                residencyLog.save()
             else:
-                print(nickname, "goes in at", readableTime)
-                current[uid] = True
+                print("###")
+                print("Welome",mem.firstname,mem.lastname+"!")
+                print("Time:",readableTime)
+                timestamp[uid] = curTime
+                status[uid] = True
+
         else:
-            print(nickname, "goes in at", readableTime)
-            current[uid] = True
+            print("###")
+            print("Welome",mem.firstname,mem.lastname+"!")
+            print("Time:",readableTime)
+            timestamp[uid] = curTime
+            status[uid] = True
         # with open('log.csv', 'a') as f:
         #     writer = csv.writer(f)
         #     timeVal = time.time()
@@ -112,12 +137,33 @@ def viewLogs(request):
         log['uid'] = i.member.uid
         log['nickname'] = i.member.nickname
         log['idnum'] = i.member.idnum
+        i.timestamp = i.timestamp.astimezone(phil_tz)
         log['timestamp'] = i.timestamp
         finalLogList.append(log)
 
     data['logList'] = finalLogList
     
     return render(request, "viewLogs.html", data)
+
+def viewResidencyLogs(request):
+    logList = ResidencyLog.objects.all()
+    data = {}
+    rawLogList = [i for i in logList.iterator()]
+    finalLogList = []
+
+    for i in rawLogList:
+        log = {}
+        log['uid'] = i.member.uid
+        log['nickname'] = i.member.nickname
+        log['idnum'] = i.member.idnum
+        log['minutes'] = format(i.seconds / 60, '.2f')
+        i.timestamp = i.timestamp.astimezone(phil_tz)
+        log['timestamp'] = i.timestamp
+        finalLogList.append(log)
+
+    data['logList'] = finalLogList
+    
+    return render(request, "viewResidencyLogs.html", data)
 # @csrf_exempt
 # def addMember(uid, nickname, firstname, lastname, idnum):
 #     mem = Member(

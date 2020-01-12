@@ -19,3 +19,8 @@ class Log(models.Model):
     #     currentDate = currentDate.replace(tzinfo=utc) 
     #     entryDate = self.date.replace(tzinfo=utc) 
     #     return entryDate.year == currentDate.year and entryDate.month == currentDate.month and entryDate.day == currentDate.day 
+
+class ResidencyLog(models.Model):
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    seconds = models.IntegerField(default=0)
+    timestamp = models.DateTimeField()
