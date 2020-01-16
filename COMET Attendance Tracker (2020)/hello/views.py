@@ -11,17 +11,24 @@ from .models import ResidencyLog
 from datetime import datetime
 from datetime import timedelta 
 from pytz import timezone
+from playsound import playsound
+
 
 import django
 import _thread
 import serial
+import os
 
 status = {}
 timestamp = {}
 phil_tz = timezone('Asia/Manila')
+
+def playbeep():
+    playsound('beep.mp3')
+
 # Function that handles RFID scanner
 def scanner_thread():
-    ser = serial.Serial('/dev/ttyUSB0', 9600)
+    ser = serial.Serial('/dev/ttyACM0', 9600)
     print(ser.name)
 
     # try:
@@ -85,6 +92,7 @@ def scanner_thread():
                 print("See you later",mem.firstname,mem.lastname+"!")
                 print("Time:",readableTime)
                 print("Minutes stayed:",format(seconds / 60, '.2f'))
+                playbeep()
                 residencyLog = ResidencyLog(
                     member=mem,
                     seconds=seconds,
@@ -93,17 +101,18 @@ def scanner_thread():
                 residencyLog.save()
             else:
                 print("###")
-                print("Welome",mem.firstname,mem.lastname+"!")
+                print("Welcome",mem.firstname,mem.lastname+"!")
                 print("Time:",readableTime)
                 timestamp[uid] = curTime
                 status[uid] = True
-
+                playbeep()
         else:
             print("###")
-            print("Welome",mem.firstname,mem.lastname+"!")
+            print("Welcome",mem.firstname,mem.lastname+"!")
             print("Time:",readableTime)
             timestamp[uid] = curTime
             status[uid] = True
+            playbeep()
         # with open('log.csv', 'a') as f:
         #     writer = csv.writer(f)
         #     timeVal = time.time()
