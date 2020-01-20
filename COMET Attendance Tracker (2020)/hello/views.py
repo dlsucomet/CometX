@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 
+from .models import MemberInfo
 from .models import Member
 from .models import Log 
 from .models import ResidencyLog 
