@@ -2,7 +2,6 @@ from django.db import models
 import pytz
 
 # Create your models here.
-class MemberInfo(models.Model):
 
 class Member(models.Model):
     uid = models.CharField(max_length=9, primary_key=True)
